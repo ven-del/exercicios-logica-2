@@ -342,12 +342,13 @@ do {
             break;
         case 0:
             console.log('Saindo...');
+            continuar = false;
             break;
         default:
             console.log('Opção inválida!');
     }
     if (opcao !== 0) {
-        continuar = readline.keyInYNStrict('Deseja continuar? (y/n) ');
+        continuar = readline.keyInYNStrict('Deseja continuar?');
     }
 } while (continuar);
 console.log('Obrigado por usar o programa! Até a próxima!');
