@@ -36,7 +36,7 @@ const escolherDiaDaSemana = () => {
 }
 
 const crudCru = () => {
-    prompt = readline.question('Escolha uma opção: \n1 -C) Create	(Cadastrar/Inserir)\n2 - R) Read    (Buscar/Ler) \n3 - U) Update    (Editar/Atualizar)\n4 - Delete  ()\n5 - Sair\n');
+    prompt = readline.question('Escolha uma opção: \n1 -C) Create	(Cadastrar/Inserir)\n2 - R) Read    (Buscar/Ler) \n3 - U) Update    (Editar/Atualizar)\n4 - Delete  (Apagar/Excluir)\n5 - Sair\n');
     switch (Number(prompt)) {
         case 1:
             console.log('Usuário criado!');
@@ -124,76 +124,50 @@ const jajanken = () => {
     let vidasUsuario = 3;
     let vidasGon = 3;
     const opcoes = ['Pedra', 'Papel', 'Tesoura'];
+    
+    const verificarVencedor = (escolhaUsuario, escolhaGon) => {
+        if (escolhaUsuario === escolhaGon) return 0;
+        
+        const regras = {
+            0: { vence: 2, perde: 1 },
+            1: { vence: 0, perde: 2 },
+            2: { vence: 1, perde: 0 }
+        };
+        
+        return regras[escolhaUsuario - 1].vence === escolhaGon - 1 ? 1 : -1;
+    };
 
     console.log('Gon te desafia para jogar Jankenpô!');
+    
     while (vidasUsuario > 0 && vidasGon > 0) {
-        console.log(`Você tem ${vidasUsuario} vidas!`);
-        console.log(`Gon tem ${vidasGon} vidas!`);
-        const escolhaUsuario = readline.question('Escolha uma opção: \n1 - Pedra \n2 - Papel \n3 - Tesoura \n');
+        console.log(`\nVidas: Você (${vidasUsuario}) vs Gon (${vidasGon})`);
+        
+        const escolhaUsuario = Number(readline.question('Escolha: \n1 - Pedra \n2 - Papel \n3 - Tesoura \n'));
+        if (![1, 2, 3].includes(escolhaUsuario)) {
+            console.log('Você não pode fugir do desafio!');
+            continue;
+        }
+
         const escolhaGon = Math.floor(Math.random() * 3) + 1;
-            switch (Number(escolhaUsuario)) {
-                case 1:
-                    if (escolhaGon === 1) {
-                        console.log(`Você escolheu: ${opcoes[escolhaUsuario - 1]}`);
-                        console.log(`Gon escolheu: ${opcoes[escolhaGon - 1]}`);
-                        console.log('Empate!');
-                    } else if (escolhaGon === 2) {
-                        console.log(`Você escolheu: ${opcoes[escolhaUsuario - 1]}`);
-                        console.log(`Gon escolheu: ${opcoes[escolhaGon - 1]}`);
-                        console.log('Gon venceu!');
-                        vidasUsuario--;
-                    } else {
-                        console.log(`Você escolheu: ${opcoes[escolhaUsuario - 1]}`);
-                        console.log(`Gon escolheu: ${opcoes[escolhaGon - 1]}`);
-                        console.log('Você venceu!');
-                        vidasGon--;
-                    }
-                    break;
-                case 2:
-                    if (escolhaGon === 1) {
-                        console.log(`Você escolheu: ${opcoes[escolhaUsuario - 1]}`);
-                        console.log(`Gon escolheu: ${opcoes[escolhaGon - 1]}`);
-                        console.log('Você venceu!');
-                        vidasGon--;
-                    } else if (escolhaGon === 2) {
-                        console.log(`Você escolheu: ${opcoes[escolhaUsuario - 1]}`);
-                        console.log(`Gon escolheu: ${opcoes[escolhaGon - 1]}`);
-                        console.log('Empate!');
-                    } else {
-                        console.log(`Você escolheu: ${opcoes[escolhaUsuario - 1]}`);
-                        console.log(`Gon escolheu: ${opcoes[escolhaGon - 1]}`);
-                        console.log('Gon venceu!');
-                        vidasUsuario--;
-                    }
-                    break;
-                case 3:
-                    if (escolhaGon === 1) {
-                        console.log(`Você escolheu: ${opcoes[escolhaUsuario - 1]}`);
-                        console.log(`Gon escolheu: ${opcoes[escolhaGon - 1]}`);
-                        console.log('Gon venceu!');
-                        vidasUsuario--;
-                    } else if (escolhaGon === 2) {
-                        console.log(`Você escolheu: ${opcoes[escolhaUsuario - 1]}`);
-                        console.log(`Gon escolheu: ${opcoes[escolhaGon - 1]}`);
-                        console.log('Você venceu!');
-                        vidasGon--;
-                    } else {
-                        console.log(`Você escolheu: ${opcoes[escolhaUsuario - 1]}`);
-                        console.log(`Gon escolheu: ${opcoes[escolhaGon - 1]}`);
-                        console.log('Empate!');
-                    }
-                    break;
-                default:
-                    console.log('Você não pode fugir do desafio!');
-                    continue;
-            }
+        
+        console.log(`\nVocê escolheu: ${opcoes[escolhaUsuario - 1]}`);
+        console.log(`Gon escolheu: ${opcoes[escolhaGon - 1]}`);
+
+        const resultado = verificarVencedor(escolhaUsuario, escolhaGon);
+        
+        if (resultado === 0) {
+            console.log('Empate!');
+        } else if (resultado === 1) {
+            console.log('Você venceu!');
+            vidasGon--;
+        } else {
+            console.log('Gon venceu!');
+            vidasUsuario--;
+        }
     }
-    if (vidasUsuario === 0) {
-        console.log('Você perdeu o desafio!');
-    } else {
-        console.log('Você venceu o desafio!');
-    }
-}
+
+    console.log(`\n${vidasUsuario === 0 ? 'Você perdeu' : 'Você venceu'} o desafio!`);
+};
 
 const checarVelocidade = () => {
     const velocidade = readline.questionInt('Digite a velocidade do carro: ');
@@ -285,9 +259,11 @@ const bonusStage = () => {
 
 let continuar = true;
 
-do {
+do { 
 
-    console.log(`==================================================
+    console.log(`
+        
+==================================================
 ==================  MENU PRINCIPAL  ==============
 ==================================================
 1 - Escolher Dia da Semana
